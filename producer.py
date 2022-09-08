@@ -5,7 +5,7 @@ import time
 
 fake = Faker()
 
-
+PORT = 9876
 
 def handle_produce_response(error, message): 
     if error: 
@@ -18,7 +18,7 @@ def handle_produce_response(error, message):
 if __name__ == "__main__":
     # 1. initialize producer
     producer = Producer({
-        'bootstrap.servers': 'localhost:9092',
+        'bootstrap.servers': f'localhost:{PORT}',
     })
     print("Kafka Producer started.")
 
@@ -38,8 +38,9 @@ if __name__ == "__main__":
         producer.poll(1) # timout = 1 second
 
         # send data 
-        p.produce('dummy-user-tracker', message.encode('utf-8'),callback=handle_produce_response)
-        p.flush()
+        producer.produce('dummy-user-tracker', message.encode('utf-8'),callback=handle_produce_response)
+        producer.flush()
+        time.sleep(1) # just sleep for 1s to simulate data being produced
 
 
     

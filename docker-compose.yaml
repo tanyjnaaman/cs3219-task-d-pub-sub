@@ -56,10 +56,9 @@ services:
       - "9876:9876"
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234;zookeeper2:2345;zookeeper3:4567"
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234,zookeeper2:2345,zookeeper3:4567"
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:9876
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9876
     networks:
       - proxy
 
@@ -74,10 +73,8 @@ services:
       - "8765:8765"
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234;zookeeper2:2345;zookeeper3:4567"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:8765
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234,zookeeper2:2345,zookeeper3:4567"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:8765
     networks:
       - proxy
 
@@ -92,10 +89,8 @@ services:
       - "7654:7654"
     environment:
       KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234;zookeeper2:2345;zookeeper3:4567"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:7654
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234,zookeeper2:2345,zookeeper3:4567"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:7654
     networks:
       - proxy
 
