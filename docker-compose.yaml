@@ -1,0 +1,104 @@
+version: "3"
+services:
+  zookeeper1:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper1
+    ports:
+      - "1234:1234"
+    environment:
+      ZOOKEEPER_SERVER_ID: 1
+      ZOOKEEPER_INIT_LIMIT: 5 # ticks to connect to leader
+      ZOOKEEPER_SYNC_LIMIT: 2 # ticks before synchronization
+      ZOOKEEPER_TICK_TIME: 2000 # length of a single tick
+      ZOOKEEPER_CLIENT_PORT: 1234
+      ZOOKEEPER_SERVERS: zookeeper1:13888:14888;zookeeper2:23888:24888;zookeeper3:33888:34888 # indicates port numbers used to commmunicate between zookeeper servers
+    networks:
+      - proxy
+
+  zookeeper2:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper2
+    ports:
+      - "2345:2345"
+    environment:
+      ZOOKEEPER_SERVER_ID: 2
+      ZOOKEEPER_INIT_LIMIT: 5 # ticks to connect to leader
+      ZOOKEEPER_SYNC_LIMIT: 2 # ticks before synchronization
+      ZOOKEEPER_TICK_TIME: 2000 # length of a single tick
+      ZOOKEEPER_CLIENT_PORT: 2345
+      ZOOKEEPER_SERVERS: zookeeper1:13888:14888;zookeeper2:23888:24888;zookeeper3:33888:34888 # indicates port numbers used to commmunicate between zookeeper servers
+    networks:
+      - proxy
+
+  zookeeper3:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper3
+    ports:
+      - "4567:4567"
+    environment:
+      ZOOKEEPER_SERVER_ID: 3
+      ZOOKEEPER_INIT_LIMIT: 5 # ticks to connect to leader
+      ZOOKEEPER_SYNC_LIMIT: 2 # ticks before synchronization
+      ZOOKEEPER_TICK_TIME: 2000 # length of a single tick
+      ZOOKEEPER_CLIENT_PORT: 4567
+      ZOOKEEPER_SERVERS: zookeeper1:13888:14888;zookeeper2:23888:24888;zookeeper3:33888:34888 # indicates port numbers used to commmunicate between zookeeper servers
+    networks:
+      - proxy
+
+  broker1:
+    image: confluentinc/cp-kafka:latest
+    container_name: broker1
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+    ports:
+      - "9876:9876"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234;zookeeper2:2345;zookeeper3:4567"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:9876
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+    networks:
+      - proxy
+
+  broker2:
+    image: confluentinc/cp-kafka:latest
+    container_name: broker2
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+    ports:
+      - "8765:8765"
+    environment:
+      KAFKA_BROKER_ID: 2
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234;zookeeper2:2345;zookeeper3:4567"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:8765
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+    networks:
+      - proxy
+
+  broker3:
+    image: confluentinc/cp-kafka:latest
+    container_name: broker3
+    depends_on:
+      - zookeeper1
+      - zookeeper2
+      - zookeeper3
+    ports:
+      - "7654:7654"
+    environment:
+      KAFKA_BROKER_ID: 3
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234;zookeeper2:2345;zookeeper3:4567"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:7654
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    driver: bridge
