@@ -1,11 +1,10 @@
 from confluent_kafka import Consumer
 
-PORT = 9999
 
 if __name__ == "__main__":
 
     # 1. intialize consumer
-    consumer=Consumer({'bootstrap.servers':f'localhost:{PORT}','group.id':'python-consumer','auto.offset.reset':'earliest'})
+    consumer=Consumer({'bootstrap.servers':f'localhost:9092','group.id':'python-consumer','auto.offset.reset':'earliest'})
     print('Kafka Consumer has been initiated.')
 
     # 2. subscribe to topic

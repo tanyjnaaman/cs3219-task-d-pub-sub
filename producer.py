@@ -5,8 +5,6 @@ import time
 
 fake = Faker()
 
-PORT = 9876
-
 def handle_produce_response(error, message): 
     if error: 
         print(f"Message delivery failed: error")
@@ -18,7 +16,7 @@ def handle_produce_response(error, message):
 if __name__ == "__main__":
     # 1. initialize producer
     producer = Producer({
-        'bootstrap.servers': f'localhost:{PORT}',
+        'bootstrap.servers': f'0.0.0.0:29092',
     })
     print("Kafka Producer started.")
 

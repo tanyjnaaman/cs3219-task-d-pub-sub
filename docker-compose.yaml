@@ -1,99 +1,54 @@
-version: "3"
+# This docker compose file is adapted from the following repo: https://github.com/conduktor/kafka-stack-docker-compose/blob/master/zk-single-kafka-multiple.yml
+version: "2"
+
 services:
-  zookeeper1:
+  # config for the zookeeper service. Will be used by all the kafka nodes
+  zoo1:
     image: confluentinc/cp-zookeeper:latest
-    container_name: zookeeper1
+    hostname: zoo1
     ports:
-      - "1234:1234"
+      - "2181:2181"
     environment:
       ZOOKEEPER_SERVER_ID: 1
-      ZOOKEEPER_INIT_LIMIT: 5 # ticks to connect to leader
-      ZOOKEEPER_SYNC_LIMIT: 2 # ticks before synchronization
-      ZOOKEEPER_TICK_TIME: 2000 # length of a single tick
-      ZOOKEEPER_CLIENT_PORT: 1234
-      ZOOKEEPER_SERVERS: zookeeper1:13888:14888;zookeeper2:23888:24888;zookeeper3:33888:34888 # indicates port numbers used to commmunicate between zookeeper servers
-    networks:
-      - proxy
+      ZOOKEEPER_CLIENT_PORT: 2181
 
-  zookeeper2:
-    image: confluentinc/cp-zookeeper:latest
-    container_name: zookeeper2
-    ports:
-      - "2345:2345"
-    environment:
-      ZOOKEEPER_SERVER_ID: 2
-      ZOOKEEPER_INIT_LIMIT: 5 # ticks to connect to leader
-      ZOOKEEPER_SYNC_LIMIT: 2 # ticks before synchronization
-      ZOOKEEPER_TICK_TIME: 2000 # length of a single tick
-      ZOOKEEPER_CLIENT_PORT: 2345
-      ZOOKEEPER_SERVERS: zookeeper1:13888:14888;zookeeper2:23888:24888;zookeeper3:33888:34888 # indicates port numbers used to commmunicate between zookeeper servers
-    networks:
-      - proxy
-
-  zookeeper3:
-    image: confluentinc/cp-zookeeper:latest
-    container_name: zookeeper3
-    ports:
-      - "4567:4567"
-    environment:
-      ZOOKEEPER_SERVER_ID: 3
-      ZOOKEEPER_INIT_LIMIT: 5 # ticks to connect to leader
-      ZOOKEEPER_SYNC_LIMIT: 2 # ticks before synchronization
-      ZOOKEEPER_TICK_TIME: 2000 # length of a single tick
-      ZOOKEEPER_CLIENT_PORT: 4567
-      ZOOKEEPER_SERVERS: zookeeper1:13888:14888;zookeeper2:23888:24888;zookeeper3:33888:34888 # indicates port numbers used to commmunicate between zookeeper servers
-    networks:
-      - proxy
-
-  broker1:
+  kafka-1:
     image: confluentinc/cp-kafka:latest
-    container_name: broker1
     depends_on:
-      - zookeeper1
-      - zookeeper2
-      - zookeeper3
+      - zoo1
     ports:
-      - "9876:9876"
+      - 29092:29092 # large enough
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234,zookeeper2:2345,zookeeper3:4567"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker1:9876
-      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9876
-    networks:
-      - proxy
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
+      # ensure it's localhost because we will enter the container and exec cmds there
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
 
-  broker2:
+  kafka-2:
     image: confluentinc/cp-kafka:latest
-    container_name: broker2
     depends_on:
-      - zookeeper1
-      - zookeeper2
-      - zookeeper3
+      - zoo1
     ports:
-      - "8765:8765"
+      - 39092:39092
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234,zookeeper2:2345,zookeeper3:4567"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker2:8765
-    networks:
-      - proxy
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
+      # ensure it's localhost because we will enter the container and exec cmds there
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092,PLAINTEXT_HOST://localhost:39092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
 
-  broker3:
+  kafka-3:
     image: confluentinc/cp-kafka:latest
-    container_name: broker3
     depends_on:
-      - zookeeper1
-      - zookeeper2
-      - zookeeper3
+      - zoo1
     ports:
-      - "7654:7654"
+      - 49092:49092
     environment:
       KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:1234,zookeeper2:2345,zookeeper3:4567"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker3:7654
-    networks:
-      - proxy
-
-networks:
-  proxy:
-    driver: bridge
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092,PLAINTEXT_HOST://localhost:49092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
