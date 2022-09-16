@@ -87,7 +87,7 @@ Consumers are applications (e.g. some microservice) subscribed to one or more to
 
 * [This other great medium post](https://towardsdatascience.com/how-to-build-a-simple-kafka-producer-and-consumer-with-python-a967769c4742)
 * [This article](https://www.mikulskibartosz.name/how-does-kafka-cluster-work/)
-* [Another bit from the confluent docs](https://docs.confluent.io/platform/current/clients/producer.)html#:~:text=The%20Kafka%20producer%20is%20conceptually,the%20leader%20of%20that%20partition.)
+* [Another bit from the confluent docs](https://docs.confluent.io/platform/current/clients/producer.html#:~:text=The%20Kafka%20producer%20is%20conceptually,the%20leader%20of%20that%20partition.)
 * [This really great SO post](https://stackoverflow.com/questions/60835817/what-is-a-partition-leader-in-apache-kafka)
 
 # A demo
