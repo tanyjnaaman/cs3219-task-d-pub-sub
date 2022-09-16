@@ -86,7 +86,7 @@ Consumers are applications (e.g. some microservice) subscribed to one or more to
 - [This great medium post](https://medium.com/swlh/apache-kafka-what-is-and-how-it-works-e176ab31fcd5)
 
 * [This other great medium post](https://towardsdatascience.com/how-to-build-a-simple-kafka-producer-and-consumer-with-python-a967769c4742)
-* [This article](https://www.mikulskibartosz.name/how-does-kafka-cluster-work/
+* [This article](https://www.mikulskibartosz.name/how-does-kafka-cluster-work/)
 * [Another bit from the confluent docs](https://docs.confluent.io/platform/current/clients/producer.)html#:~:text=The%20Kafka%20producer%20is%20conceptually,the%20leader%20of%20that%20partition.)
 * [This really great SO post](https://stackoverflow.com/questions/60835817/what-is-a-partition-leader-in-apache-kafka)
 
@@ -97,5 +97,3 @@ Consumers are applications (e.g. some microservice) subscribed to one or more to
 1. The dockerfile specified specifies starting up a number of zookeeper containers and Kafka containers, just like a cluster
 2. We write a producer and a consumer in python, and start them up, like in a production environment with microservices
 3. We kill one Kafka container - that's a broker going down, and we should be able to observe the leadership selection procedure, allowing for fault tolerance!
-
-## Running it
