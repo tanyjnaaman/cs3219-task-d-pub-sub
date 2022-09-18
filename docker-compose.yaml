@@ -2,10 +2,9 @@
 version: "2"
 
 services:
-  # config for the zookeeper service. Will be used by all the kafka nodes
-  zoo1:
+  zoo:
     image: confluentinc/cp-zookeeper:latest
-    hostname: zoo1
+    hostname: zoo
     ports:
       - "2181:2181"
     environment:
@@ -15,13 +14,12 @@ services:
   kafka-1:
     image: confluentinc/cp-kafka:latest
     depends_on:
-      - zoo1
+      - zoo
     ports:
-      - 29092:29092 # large enough
+      - 29092:29092
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
-      # ensure it's localhost because we will enter the container and exec cmds there
+      KAFKA_ZOOKEEPER_CONNECT: zoo:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-1:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
@@ -29,13 +27,12 @@ services:
   kafka-2:
     image: confluentinc/cp-kafka:latest
     depends_on:
-      - zoo1
+      - zoo
     ports:
       - 39092:39092
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
-      # ensure it's localhost because we will enter the container and exec cmds there
+      KAFKA_ZOOKEEPER_CONNECT: zoo:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-2:9092,PLAINTEXT_HOST://localhost:39092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
@@ -43,12 +40,12 @@ services:
   kafka-3:
     image: confluentinc/cp-kafka:latest
     depends_on:
-      - zoo1
+      - zoo
     ports:
       - 49092:49092
     environment:
       KAFKA_BROKER_ID: 3
-      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181
+      KAFKA_ZOOKEEPER_CONNECT: zoo:2181
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-3:9092,PLAINTEXT_HOST://localhost:49092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT

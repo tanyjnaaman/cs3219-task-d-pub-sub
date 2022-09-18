@@ -62,7 +62,7 @@ Amongst other things, it handles the re-election of partition leaders if a given
 <summary><b>Producers</b></summary>
 <br>
 
-The whole point of Kafka is to support n-m mappings of producers to consumers in a publisher-subscriber model, with scalability and fault tolerance. Producers produce messages - if no key is provided in the messages, the message will be allocated to a given partition in a default way. But if a key is provided, a hash will be generated, which determines to which partition it goes.
+The whole point of Kafka is to support n-m mappings of producers to consumers in a publisher-subscriber model, with scalability and fault tolerance. Producers produce messages - a partitioner maps each message to a topic partition, and the producer sends a produce request to the leader of that partition. If no key is provided in the messages, the message will be allocated to a given partition in a default way. But if a key is provided, a hash will be generated, which determines to which partition it goes.
 
 When we are working with the concept of messages, there’s something called Acknowledgment (ack). The ack is basically a confirmation that the message was delivered. In Kafka, we can configure this ack when producing the messages. There are three different levels of configuration for that:
 
